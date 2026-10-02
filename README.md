@@ -8,9 +8,9 @@ HumanLayer is **not an AI detector** and does not claim access to a model’s pr
 
 ## Prototype status
 
-This release is a **product shell**, not a functioning AI analysis service. All scores, patterns, confidence values, findings, reconstructions, and inspector answers are typed, prewritten demo data. Uploaded files are not read, parsed, stored, or transmitted; only their filename/type label a preview. The workspace clearly separates those files from the bundled examples.
+This release is a **product shell**, not a functioning AI analysis service. All scores, patterns, confidence values, findings, reconstructions, and inspector answers are typed, prewritten demo data. Uploaded files are not read, parsed, stored, or transmitted; the filename/type is displayed locally in a selection dialog and is not included in the workspace URL. The workspace clearly separates those files from the bundled examples.
 
-Included: a responsive landing page, code/paper examples, seven workspace views, an interactive React Flow creation-logic graph, reusable issue cards, a mock Inspector, split/unified comparison, review-plan/report exports, dark/light themes, and separate semantic/test verification reports. Artifact tests are explicitly marked **not run**.
+Included: a responsive landing page with file selection and paste previews, code/paper examples, seven workspace views, an interactive React Flow creation-logic graph, reusable issue cards, a mock Inspector, split/unified comparison, review-plan/report exports, dark/light themes, and separate semantic/test verification reports. Artifact tests are explicitly marked **not run**.
 
 ## Stack
 
@@ -18,7 +18,7 @@ Next.js App Router, TypeScript, Tailwind CSS, shadcn/ui-style Radix primitives, 
 
 ## Run locally
 
-Requires Node.js 20.9+ and npm.
+Requires Node.js 22.6+ and npm (Node 24 LTS recommended for the native TypeScript test runner).
 
 ```bash
 npm ci
@@ -30,6 +30,7 @@ Open http://localhost:4173. The landing page is `/`; the workspace is `/workspac
 ```bash
 npm run lint
 npm run typecheck
+npm test
 npm run build
 ```
 

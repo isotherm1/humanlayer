@@ -10,7 +10,7 @@
 | Next.js, TypeScript, Tailwind, shadcn/ui, Lucide, Motion, React Flow | Single App Router repository, strict types, Tailwind styles, Radix UI primitives, reduced-motion-aware transitions, custom React Flow nodes |
 | No unnecessary services                                              | Static export; no database, auth, payment, backend, Docker, or secrets                                                                      |
 | Landing and workspace                                                | `/` and `/workspace/`                                                                                                                       |
-| Upload and format concepts                                           | ZIP/PY/JS/TS/TSX/PDF/MD/TXT labels, native file picker, drag/drop, explicit sample-preview handoff                                          |
+| Upload and format concepts                                           | ZIP/PY/JS/TS/TSX/PDF/MD/TXT labels, native file picker, drag/drop, local paste preview, explicit sample-preview handoff                                          |
 | Required navigation                                                  | Overview, Creation Logic, Structure, Issues, Reconstruct, Compare, Verification                                                             |
 | Overview scores, severity summary, pattern, confidence               | Typed mock values; severity counts derived from the sample issues                                                                           |
 | Creation Logic example                                               | Original Goal → Authentication → JWT Strategy → Middleware → API Routes; selectable custom nodes and evidence panel                         |
@@ -25,7 +25,9 @@
 
 The landing layout adapts at 760px and 390px. The workspace collapses its Inspector below 1280px, replaces sidebar navigation with an accessible Dialog below 760px, stacks dense grids and comparison panels, and keeps code overflow inside scrollable blocks. Grid columns use `minmax(0, 1fr)` to contain overflow; long filenames and evidence excerpts wrap. Focus outlines, native file selection, Radix dialog focus management, reduced-motion support, and theme tokens are included.
 
-Review was performed at the source/layout level. A real browser visual and interaction pass was **not available** because the environment lacks the control-browser capability required for managed-preview QA. Therefore mobile rendering, graph fit, and OS/browser download behavior remain to be visually verified on actual devices. These are limitations, not passed tests.
+A desktop Chrome browser pass was completed on 2026-10-02. Seven views, graph node selection/zoom/fit, severity navigation, issue details, focused Inspector responses, reconstruction selection, code/paper switching, theme switching, report text preview, format rejection, and paste-preview handoff were exercised. Desktop document width matched viewport width (1363px), and code scrolling stayed inside its panel.
+
+Browser file-download events and programmatic clipboard permission were unavailable in this test browser. Export controls now include a selectable text preview and honest fallback messages. Native downloads, native clipboard permission, physical mobile devices, touch gestures, and cross-browser behavior remain unverified. No claim of universal bug freedom is made.
 
 ## Validation boundaries
 

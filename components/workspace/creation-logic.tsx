@@ -98,7 +98,7 @@ export function CreationLogic({ demo }: { demo: ArtifactDemo }) {
             size={1}
             color="var(--graph-dot)"
           />
-          <Controls showInteractive={false} />
+          <Controls position="bottom-right" showInteractive={false} />
           <div className="graph-legend">
             <span />
             INFERRED RELATIONSHIPS

@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Wand2, Columns2, Download, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { downloadText } from "@/lib/utils";
+import { ExportButton } from "@/components/export-button";
+import { reviewPlan } from "@/lib/report";
 import type { ArtifactDemo, WorkspaceView } from "@/types/artifact";
 export function Reconstruct({
   demo,
@@ -57,22 +58,9 @@ export function Reconstruct({
       </div>
       <div className="reconstruction-actions">
         <span>{selected.length} review items selected</span>
-        <Button
-          variant="outline"
-          disabled={!selected.length}
-          onClick={() =>
-            downloadText(
-              "humanlayer-review-plan.md",
-              `# HumanLayer sample review plan\n\nDemo data only. No AI analysis or changes applied.\n\n${demo.reconstruction
-                .filter((s) => selected.includes(s.title))
-                .map((s) => `## ${s.title}\n\n${s.detail}\n\nScope: ${s.scope}`)
-                .join("\n\n")}`,
-            )
-          }
-        >
-          <Download size={15} />
-          Export review plan
-        </Button>
+        <ExportButton variant="outline" disabled={!selected.length} filename="humanlayer-review-plan.md" content={reviewPlan(demo, selected)}>
+          <Download size={15} />Export review plan
+        </ExportButton>
         <Button onClick={() => onNavigate("compare")}>
           <Columns2 size={15} />
           View bundled proposal

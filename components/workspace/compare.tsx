@@ -8,10 +8,9 @@ import {
   Info,
   Download,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ExportButton } from "@/components/export-button";
 import { CodeBlock, DiffBlock } from "@/components/workspace/code-block";
 import { compareLines } from "@/lib/comparison";
-import { downloadText } from "@/lib/utils";
 import type { ArtifactDemo } from "@/types/artifact";
 export function Compare({ demo }: { demo: ArtifactDemo }) {
   const [view, setView] = useState<"split" | "unified">("split");
@@ -55,22 +54,9 @@ export function Compare({ demo }: { demo: ArtifactDemo }) {
               Unified
             </button>
           </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            aria-label="Download sample proposal"
-            title="Download sample proposal"
-            onClick={() =>
-              downloadText(
-                demo.kind === "code"
-                  ? "gate.proposed.ts"
-                  : "abstract.proposed.md",
-                demo.reconstructed,
-              )
-            }
-          >
+          <ExportButton size="icon" variant="ghost" aria-label="Export sample proposal" title="Export sample proposal" filename={demo.kind === "code" ? "gate.proposed.ts" : "abstract.proposed.md"} content={demo.reconstructed}>
             <Download size={16} />
-          </Button>
+          </ExportButton>
         </div>
       </div>
       {view === "split" ? (

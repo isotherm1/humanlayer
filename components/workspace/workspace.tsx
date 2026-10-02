@@ -1,7 +1,6 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "motion/react";
 import {
   ChevronRight,
@@ -10,7 +9,6 @@ import {
   Menu,
   FileCode2,
   FileText,
-  Info,
 } from "lucide-react";
 import { Brand } from "@/components/brand";
 import { ThemeToggle } from "@/components/theme-provider";
@@ -33,25 +31,27 @@ import { Compare } from "@/components/workspace/compare";
 import { Verification } from "@/components/workspace/verification";
 import { demos } from "@/lib/mock-data";
 import { viewDescriptions, navigation } from "@/lib/product";
-import { downloadText } from "@/lib/utils";
+import { ExportButton } from "@/components/export-button";
 import { sampleReport } from "@/lib/report";
-import type { ArtifactKind, Issue, WorkspaceView } from "@/types/artifact";
+import type { ArtifactKind, Issue, WorkspaceView, Severity } from "@/types/artifact";
 export function Workspace() {
+  const mainRef = useRef<HTMLElement>(null);
   const params = useSearchParams();
-  const [kind, setKind] = useState<ArtifactKind>(
-    params.get("kind") === "paper" ? "paper" : "code",
-  );
+  const router = useRouter();
+  const kind: ArtifactKind = params.get("kind") === "paper" ? "paper" : "code";
   const [view, setView] = useState<WorkspaceView>("overview"),
     [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [issueFilter, setIssueFilter] = useState<Severity | "all">("all");
   const [navOpen, setNavOpen] = useState(false),
     [inspectorOpen, setInspectorOpen] = useState(false);
   const demo = demos[kind];
   const title =
     navigation.flatMap((g) => g.items).find((i) => i.id === view)?.label ||
     "Overview";
-  const importedName = params.get("artifact")?.slice(0, 240);
-  function navigate(next: WorkspaceView) {
+  function navigate(next: WorkspaceView, severity: Severity | "all" = "all") {
+    setIssueFilter(severity);
     setView(next);
+    mainRef.current?.scrollTo({ top: 0 });
     setNavOpen(false);
   }
   function inspect(issue: Issue) {
@@ -59,8 +59,9 @@ export function Workspace() {
     if (window.innerWidth < 1280) setInspectorOpen(true);
   }
   function selectDemo(next: ArtifactKind) {
-    setKind(next);
+    router.replace(`/workspace/?kind=${next}`, { scroll: false });
     setView("overview");
+    mainRef.current?.scrollTo({ top: 0 });
     setSelectedIssue(null);
   }
   function viewContent() {
@@ -74,7 +75,7 @@ export function Workspace() {
       case "structure":
         return <Structure key={kind} demo={demo} />;
       case "issues":
-        return <Issues key={kind} demo={demo} onInspect={inspect} />;
+        return <Issues key={`${kind}-${issueFilter}`} demo={demo} initialFilter={issueFilter} onInspect={inspect} />;
       case "reconstruct":
         return <Reconstruct key={kind} demo={demo} onNavigate={navigate} />;
       case "compare":
@@ -105,7 +106,7 @@ export function Workspace() {
             ) : (
               <FileText size={14} />
             )}
-            <Link href="/workspace/">{demo.name}</Link>
+            <button onClick={() => navigate("overview")}>{demo.name}</button>
           </span>
           <ChevronRight size={12} />
           <strong>{title}</strong>
@@ -128,7 +129,7 @@ export function Workspace() {
         <aside className="workspace-sidebar">
           <Sidebar demo={demo} view={view} onNavigate={navigate} />
         </aside>
-        <main className="workspace-main" id="workspace-main">
+        <main ref={mainRef} className="workspace-main" id="workspace-main">
           <div className="workspace-content">
             <div className="workspace-title-row">
               <div>
@@ -138,20 +139,9 @@ export function Workspace() {
                 <h1>{title}</h1>
                 <p>{viewDescriptions[view]}</p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="export-report"
-                onClick={() =>
-                  downloadText(
-                    `humanlayer-${kind}-sample-report.md`,
-                    sampleReport(demo),
-                  )
-                }
-              >
-                <Download size={14} />
-                <span>Export report</span>
-              </Button>
+              <ExportButton variant="outline" size="sm" className="export-report" filename={`humanlayer-${kind}-sample-report.md`} content={sampleReport(demo)}>
+                <Download size={14} /><span>Export report</span>
+              </ExportButton>
             </div>
             <div className="sample-context-bar">
               <span>
@@ -167,19 +157,9 @@ export function Workspace() {
                 <option value="paper">Paper example</option>
               </select>
             </div>
-            {importedName && (
-              <div className="imported-artifact-note">
-                <Info size={15} />
-                <p>
-                  <strong>{importedName}</strong> was selected, but not
-                  analyzed. The findings below belong to{" "}
-                  <strong>{demo.name}</strong>, the bundled example.
-                </p>
-              </div>
-            )}
             <motion.div
               key={`${kind}-${view}`}
-              initial={{ opacity: 0, y: 4 }}
+              initial={{ opacity: 1, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.16 }}
             >

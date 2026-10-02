@@ -17,7 +17,14 @@ export function Inspector({
   const [question, setQuestion] = useState<InspectorQuestion>("why"),
     [prompt, setPrompt] = useState(""),
     [message, setMessage] = useState("");
-  const response = demo.inspector[question];
+  const response = selectedIssue
+    ? {
+        why: { title: selectedIssue.title, body: selectedIssue.explanation, evidence: [selectedIssue.whyItMatters] },
+        evidence: { title: "Evidence for this issue", body: selectedIssue.evidence.observation, evidence: [`${selectedIssue.evidence.file} · ${selectedIssue.evidence.location}`, `Sample confidence: ${selectedIssue.confidence}%`] },
+        change: { title: "Suggested reconstruction", body: selectedIssue.reconstruction, evidence: ["A prewritten suggestion. Review semantics before applying it."] },
+        alternatives: { title: "Review the tradeoff", body: "Keep the current design if its behavior is intentional; document that intent. Otherwise, review the suggested reconstruction with the surrounding artifact.", evidence: [selectedIssue.whyItMatters, "No alternatives have been generated or tested."] },
+      }[question]
+    : demo.inspector[question];
   return (
     <div className="inspector-inner">
       <header className="inspector-header">

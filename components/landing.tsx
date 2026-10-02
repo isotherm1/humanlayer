@@ -30,6 +30,8 @@ export function Landing() {
     [dragging, setDragging] = useState(false),
     [error, setError] = useState("");
   const [imported, setImported] = useState<ImportedArtifact | null>(null);
+  const [pasteOpen, setPasteOpen] = useState(false);
+  const [pasted, setPasted] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
   function accept(file: File | undefined) {
     if (!file) return;
@@ -48,7 +50,7 @@ export function Landing() {
     setImported({ name: file.name, kind: selectedKind, size: file.size });
   }
   const previewHref = imported
-    ? `/workspace/?kind=${imported.kind}&artifact=${encodeURIComponent(imported.name)}&size=${imported.size}`
+    ? `/workspace/?kind=${imported.kind}`
     : "/workspace/";
   return (
     <div className="landing-page">
@@ -71,7 +73,7 @@ export function Landing() {
       <main className="landing-main">
         <motion.section
           className="landing-hero"
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
@@ -92,7 +94,7 @@ export function Landing() {
         </motion.section>
         <motion.section
           className="artifact-uploader"
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 1, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
           aria-label="Import an artifact"
@@ -168,6 +170,7 @@ export function Landing() {
               <Upload size={15} />
               Choose artifact
             </Button>
+            <Button variant="ghost" onClick={() => setPasteOpen(true)}>Paste text</Button>
             <span className="drag-hint">or drag and drop a file</span>
             <input
               ref={fileInput}
@@ -241,6 +244,23 @@ export function Landing() {
           Open source
         </a>
       </footer>
+      <Dialog open={pasteOpen} onOpenChange={setPasteOpen}>
+        <DialogContent>
+          <DialogTitle className="dialog-title">Paste an artifact</DialogTitle>
+          <DialogDescription className="dialog-description">Preview the import workflow. Content stays in this page; no parsing or AI analysis is performed.</DialogDescription>
+          <form onSubmit={(event) => {
+            event.preventDefault();
+            if (!pasted.trim()) return;
+            setImported({ name: kind === "code" ? "Pasted code" : "Pasted paper", kind, size: new Blob([pasted]).size });
+            setPasteOpen(false);
+            setPasted("");
+          }}>
+            <label htmlFor="pasted-artifact" className="eyebrow">{kind === "code" ? "CODE" : "PAPER TEXT"}</label>
+            <textarea id="pasted-artifact" className="paste-artifact-input" value={pasted} onChange={(event) => setPasted(event.target.value)} placeholder="Paste your artifact here…" maxLength={100000} rows={8} />
+            <Button type="submit" className="w-full" disabled={!pasted.trim()}>Preview selection</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={!!imported}
         onOpenChange={(open) => {
@@ -253,8 +273,8 @@ export function Landing() {
           </div>
           <DialogTitle className="dialog-title">Artifact selected.</DialogTitle>
           <DialogDescription className="dialog-description">
-            The product shell can preview the workflow. This file has not been
-            read, parsed, or analyzed.
+            The product shell can preview the workflow. No content has been
+            parsed, analyzed, or sent to a server.
           </DialogDescription>
           {imported && (
             <div className="selected-file">
@@ -269,8 +289,8 @@ export function Landing() {
             </div>
           )}
           <p className="dialog-note">
-            Only the filename and type label the preview. All findings will
-            remain the bundled example, separate from your artifact.
+            The selection label stays on this page. The workspace will show a bundled
+            example; none of its findings describe your selected artifact.
           </p>
           <Button className="w-full" asChild>
             <Link href={previewHref}>Open sample workspace</Link>

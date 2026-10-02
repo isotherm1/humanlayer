@@ -1741,6 +1741,7 @@ pre {
 .logic-canvas .react-flow__controls {
   left: auto;
   right: 12px;
+  width: 30px;
   bottom: 33px;
   box-shadow: none;
   border: 1px solid var(--border);
@@ -3288,3 +3289,8 @@ pre {
     scroll-behavior: auto !important;
   }
 }
+
+.paste-artifact-input { width: 100%; min-height: 180px; resize: vertical; margin: 12px 0 20px; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); color: var(--foreground); font: 12px/1.7 var(--font-mono); }
+.workspace-breadcrumb button { color: inherit; font: inherit; cursor: pointer; background: none; border: 0; padding: 0; }
+
+.export-preview-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }

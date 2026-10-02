@@ -6,11 +6,13 @@ import type { ArtifactDemo, Issue, Severity } from "@/types/artifact";
 export function Issues({
   demo,
   onInspect,
+  initialFilter = "all",
 }: {
   demo: ArtifactDemo;
+  initialFilter?: Severity | "all";
   onInspect: (issue: Issue) => void;
 }) {
-  const [filter, setFilter] = useState<Severity | "all">("all");
+  const [filter, setFilter] = useState<Severity | "all">(initialFilter);
   const issues = demo.issues.filter(
     (i) => filter === "all" || i.severity === filter,
   );

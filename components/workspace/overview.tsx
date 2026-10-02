@@ -2,14 +2,14 @@ import { Layers3, Lightbulb, ChevronRight, CircleAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { IssueCard } from "@/components/workspace/issue-card";
-import type { ArtifactDemo, Issue, WorkspaceView } from "@/types/artifact";
+import type { ArtifactDemo, Issue, WorkspaceView, Severity } from "@/types/artifact";
 export function Overview({
   demo,
   onNavigate,
   onInspect,
 }: {
   demo: ArtifactDemo;
-  onNavigate: (view: WorkspaceView) => void;
+  onNavigate: (view: WorkspaceView, severity?: Severity | "all") => void;
   onInspect: (issue: Issue) => void;
 }) {
   const circumference = 2 * Math.PI * 43;
@@ -127,7 +127,7 @@ export function Overview({
         </div>
         <div className="issue-summary">
           {(["high", "medium", "low"] as const).map((s) => (
-            <button key={s} onClick={() => onNavigate("issues")}>
+            <button key={s} onClick={() => onNavigate("issues", s)}>
               <span className={`severity-mark ${s}`} />
               <strong>
                 {demo.issues.filter((i) => i.severity === s).length}
