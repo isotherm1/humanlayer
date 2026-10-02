@@ -22,7 +22,7 @@ export function DialogContent({
         {children}
         <DialogPrimitive.Close
           className="dialog-close"
-          aria-label="Close dialog"
+          aria-label="关闭对话框"
         >
           <X size={18} />
         </DialogPrimitive.Close>

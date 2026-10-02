@@ -3,11 +3,11 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 export const metadata: Metadata = {
   title: {
-    default: "HumanLayer — Understand AI-made work",
+    default: "HumanLayer — 读明白，再改好",
     template: "%s · HumanLayer",
   },
   description:
-    "AI can create. Humans still need to understand. Explore inferred creation logic, evidence, and readable reconstruction in an honest product-shell prototype.",
+    "基于原文理解代码与论文，查看结构、证据与重构建议。",
   icons: { icon: "/favicon.svg" },
 };
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="zh-CN" data-theme="light">
       <body>
         <ThemeProvider>{children}</ThemeProvider>
       </body>

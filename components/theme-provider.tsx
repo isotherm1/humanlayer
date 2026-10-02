@@ -12,9 +12,9 @@ import { Button } from "@/components/ui/button";
 const ThemeContext = createContext<{
   theme: "dark" | "light";
   toggle: () => void;
-}>({ theme: "dark", toggle: () => {} });
+}>({ theme: "light", toggle: () => {} });
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
@@ -36,8 +36,8 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggle}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      aria-label={`切换为${theme === "dark" ? "浅色" : "深色"}模式`}
+      title={`切换为${theme === "dark" ? "浅色" : "深色"}模式`}
     >
       {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
     </Button>

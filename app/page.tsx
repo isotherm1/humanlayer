@@ -1,4 +1,2 @@
-import { Landing } from "@/components/landing";
-export default function HomePage() {
-  return <Landing />;
-}
+import { HumanLayerApp } from "@/components/humanlayer-app";
+export default function Page(){return <HumanLayerApp/>;}

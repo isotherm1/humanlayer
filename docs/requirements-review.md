@@ -1,36 +1,11 @@
-# HumanLayer requirements review
+# 0.2 需求核验
 
-## Product and architecture
+本次后续要求取代最初“仅产品壳”的限制，主要界面改为中文，参考 Kimi 的克制布局。单 Next.js 仓库、无数据库或独立后端。
 
-| Requirement                                                          | Implementation                                                                                                                              |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thesis and honest inference terminology                              | Landing, mock Inspector, report exports, typed sample data                                                                                  |
-| No AI detection or private chain-of-thought claims                   | Explicit boundaries in landing, graph, README, and Inspector                                                                                |
-| No real AI functionality                                             | Prewritten code/paper examples; no model calls or artifact parser                                                                           |
-| Next.js, TypeScript, Tailwind, shadcn/ui, Lucide, Motion, React Flow | Single App Router repository, strict types, Tailwind styles, Radix UI primitives, reduced-motion-aware transitions, custom React Flow nodes |
-| No unnecessary services                                              | Static export; no database, auth, payment, backend, Docker, or secrets                                                                      |
-| Landing and workspace                                                | `/` and `/workspace/`                                                                                                                       |
-| Upload and format concepts                                           | ZIP/PY/JS/TS/TSX/PDF/MD/TXT labels, native file picker, drag/drop, local paste preview, explicit sample-preview handoff                                          |
-| Required navigation                                                  | Overview, Creation Logic, Structure, Issues, Reconstruct, Compare, Verification                                                             |
-| Overview scores, severity summary, pattern, confidence               | Typed mock values; severity counts derived from the sample issues                                                                           |
-| Creation Logic example                                               | Original Goal → Authentication → JWT Strategy → Middleware → API Routes; selectable custom nodes and evidence panel                         |
-| Reusable issue cards                                                 | Explanation, evidence, why it matters, suggested reconstruction, severity and confidence; expandable details                                |
-| Right AI Inspector                                                   | Four preset questions and mock replies; custom submission explains that live AI is not connected                                            |
-| Compare                                                              | Split/unified line comparison, syntax styling, explicit unverified-proposal status                                                          |
-| Verification distinction                                             | Semantic review pending; artifact tests not run; no fabricated execution claims                                                             |
-| Reusable components and typed data                                   | `components/`, `types/`, `lib/`; small route files                                                                                          |
-| README                                                               | Thesis, status, stack, local commands, honest capability boundary                                                                           |
+已实现：实际材料读取、本地 AST 规则检查、排版重构、逐行对照、原文证据、实际文件结构、来源清晰的图形阅读视图、导出、模型接口、同源服务端密钥隔离、输入边界、深浅主题、移动导航。
 
-## Interaction and layout review
+有意调整：移除固定可读性评分，改用可核验的文件数、行数等指标；不再用同一份模拟报告回答所有输入。未连接模型时不生成业务意图，也不伪装 AI 问答。
 
-The landing layout adapts at 760px and 390px. The workspace collapses its Inspector below 1280px, replaces sidebar navigation with an accessible Dialog below 760px, stacks dense grids and comparison panels, and keeps code overflow inside scrollable blocks. Grid columns use `minmax(0, 1fr)` to contain overflow; long filenames and evidence excerpts wrap. Focus outlines, native file selection, Radix dialog focus management, reduced-motion support, and theme tokens are included.
+尚未验证：真实模型请求（缺少服务端凭证）、模型建议的项目语义等价、上传代码的执行与测试、论文事实核查。PDF 仅提取文字，不含 OCR 或图表解释；Python 没有 AST 解析。
 
-A desktop Chrome browser pass was completed on 2026-10-02. Seven views, graph node selection/zoom/fit, severity navigation, issue details, focused Inspector responses, reconstruction selection, code/paper switching, theme switching, report text preview, format rejection, and paste-preview handoff were exercised. Desktop document width matched viewport width (1363px), and code scrolling stayed inside its panel.
-
-Browser file-download events and programmatic clipboard permission were unavailable in this test browser. Export controls now include a selectable text preview and honest fallback messages. Native downloads, native clipboard permission, physical mobile devices, touch gestures, and cross-browser behavior remain unverified. No claim of universal bug freedom is made.
-
-## Validation boundaries
-
-Lint, TypeScript checking, and the production build must complete without introduced errors before delivery. Their actual outcomes are reported in the delivery message; this document does not fabricate artifact-test results. No tests of an uploaded source project, no manuscript fact checks, and no semantic-equivalence verification have been executed.
-
-The graph and confidence values are mock inferences. Reconstruction remains an illustrative proposal; the code example deliberately exposes changes to the async/error/header contract as review requirements.
+测试：20 项自动化测试包含本地规则、语法失败、证据拒绝、接口输入与错误边界、模拟上游响应、文本与 ZIP 读取，以及逐行差异回放。模拟上游测试不等于真实模型验收。

@@ -6,3 +6,6 @@ out/
 !.env.example
 *.tsbuildinfo
 .DS_Store
+
+dist/
+public/pdf.worker.mjs

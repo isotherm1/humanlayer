@@ -1,3 +1,5 @@
+> 历史记录：此文对应 0.1 产品壳审计，不代表当前 0.2 的功能状态。当前状态见 README 与 requirements-review。
+
 # HumanLayer prototype audit — 2026-10-02
 
 Scope: the product shell, state transitions, mock-data boundaries, local imports, comparison, exports, and static deployment. This is not an audit of uploaded artifacts or production AI behavior.

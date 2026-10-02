@@ -1,10 +1,10 @@
 {
   "name": "humanlayer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "next build",
+    "build": "node scripts/prepare-assets.mjs && next build && node scripts/build-worker.mjs",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.mjs"
@@ -20,7 +20,11 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
     "motion": "^12.0.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "@babel/parser": "^7.28.4",
+    "prettier": "^3.6.2",
+    "fflate": "^0.8.2",
+    "pdfjs-dist": "^5.4.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",
