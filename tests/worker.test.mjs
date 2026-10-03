@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {gzipSync} from 'node:zlib';
+import ts from 'typescript';
+const html='<!doctype html><html lang="zh-CN"><meta charset="utf-8"><h1>把复杂的材料，读明白。</h1></html>';
+const script='console.log("中文材料");';
+const binary=Buffer.from([137,80,78,71,13,10,26,10]);
+const assets={'/index.html':html,'/workspace/index.html':html,'/404.html':'页面不存在','/_next/static/chunks/app.js':script,'/icon.png':binary};
+const packed=Object.fromEntries(Object.entries(assets).map(([name,content])=>[name,gzipSync(content).toString('base64')]));
+const compiled=ts.transpileModule(readFileSync(new URL('../server/index.ts',import.meta.url),'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText.replace(/^import .*from ["'][^"']+["'];?\s*$/gm,'');
+const {default:worker}=await import('data:text/javascript;base64,'+Buffer.from('const assets='+JSON.stringify(packed)+';const handleApi=async()=>Response.json({configured:false});\n'+compiled).toString('base64'));
+const request=(path,method='GET')=>worker.fetch(new Request('https://example.test'+path,{method}),{});
+test('HTML is decoded UTF-8 even when a proxy does not preserve encoding headers',async()=>{const r=await request('/');assert.equal(r.status,200);assert.equal(r.headers.get('content-encoding'),null);assert.equal(r.headers.get('content-type'),'text/html; charset=utf-8');assert.equal(await r.text(),html);});
+test('JS and binary assets cross the response boundary uncompressed',async()=>{assert.equal(await (await request('/_next/static/chunks/app.js')).text(),script);assert.deepEqual(Buffer.from(await (await request('/icon.png')).arrayBuffer()),binary);});
+test('new version prefix bypasses previously cached broken assets',async()=>{const r=await request('/assets/v0.2.1/_next/static/chunks/app.js');assert.equal(r.status,200);assert.equal(await r.text(),script);assert.equal(r.headers.get('cache-control'),'no-cache');});
+test('workspace, not-found, HEAD, malformed path and unsupported method remain valid',async()=>{assert.equal(await (await request('/workspace/')).text(),html);assert.equal((await request('/missing')).status,404);const head=await request('/','HEAD');assert.equal(head.status,200);assert.equal(await head.text(),'');assert.equal((await request('/%ZZ')).status,400);assert.equal((await request('/','POST')).status,405);});

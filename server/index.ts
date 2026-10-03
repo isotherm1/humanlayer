@@ -24,6 +24,9 @@ const worker = {
     } catch {
       return new Response("路径无效", { status: 400 });
     }
+    // A new asset prefix avoids reusing browser caches from the broken release.
+    if (path.startsWith("/assets/v0.2.1/_next/static/"))
+      path = path.slice("/assets/v0.2.1".length);
     if (path.endsWith("/")) path += "index.html";
     let entry = assets[path];
     if (!entry && !path.includes(".")) entry = assets[path + "/index.html"];
@@ -36,14 +39,15 @@ const worker = {
         ? path.split(".").pop()
         : "html"
       : "html";
-    return new Response(request.method === "HEAD" ? null : bytes, {
+    // Sites may normalize response encoding headers. Keep compression internal
+    // to the asset bundle and send decoded bytes over the response boundary.
+    const body = request.method === "HEAD" ? null :
+      new Response(bytes).body!.pipeThrough(new DecompressionStream("gzip"));
+    return new Response(body, {
       status: found ? 200 : 404,
       headers: {
         "content-type": mime[ext || "html"] || "application/octet-stream",
-        "content-encoding": "gzip",
-        "cache-control": path.startsWith("/_next/static/")
-          ? "public, max-age=31536000, immutable"
-          : "no-cache",
+        "cache-control": "no-cache",
         "x-content-type-options": "nosniff",
         "referrer-policy": "same-origin",
       },
