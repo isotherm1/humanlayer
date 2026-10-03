@@ -25,8 +25,7 @@ const worker = {
       return new Response("路径无效", { status: 400 });
     }
     // A new asset prefix avoids reusing browser caches from the broken release.
-    if (path.startsWith("/assets/v0.2.1/_next/static/"))
-      path = path.slice("/assets/v0.2.1".length);
+    path = path.replace(/^\/assets\/v0\.2\.[12](?=\/_next\/static\/)/, "");
     if (path.endsWith("/")) path += "index.html";
     let entry = assets[path];
     if (!entry && !path.includes(".")) entry = assets[path + "/index.html"];

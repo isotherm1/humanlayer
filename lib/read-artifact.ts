@@ -1,3 +1,4 @@
+import { unzipSync, strFromU8 } from "fflate";
 import type { SourceFile } from "../types/analysis.ts";
 import { MAX_CHARACTERS, validateSources } from "./analysis-contract.ts";
 export function languageOf(name: string): string {
@@ -73,7 +74,6 @@ export async function readArtifacts(
     } else if (file.name.toLowerCase().endsWith(".zip")) {
       if (file.size > 1_000_000)
         throw new Error("ZIP 超过 1 MB，请缩小项目范围。");
-      const { unzipSync, strFromU8 } = await import("fflate");
       let expanded = 0,
         count = 0;
       const output = unzipSync(new Uint8Array(await file.arrayBuffer()), {

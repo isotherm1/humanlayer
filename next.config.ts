@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 const config: NextConfig = {
   output: "export",
-  assetPrefix: process.env.NODE_ENV === "production" ? "/assets/v0.2.1" : undefined,
+  assetPrefix: process.env.NODE_ENV === "production" ? "/assets/v0.2.2" : undefined,
   allowedDevOrigins: ["terminal.local"],
   trailingSlash: true,
   images: { unoptimized: true },

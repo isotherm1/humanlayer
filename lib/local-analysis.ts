@@ -1,3 +1,7 @@
+import * as prettier from "prettier/standalone";
+import * as estree from "prettier/plugins/estree";
+import * as typescript from "prettier/plugins/typescript";
+import * as babel from "prettier/plugins/babel";
 import { parse } from "@babel/parser";
 import type {
   SourceFile,
@@ -186,12 +190,7 @@ export async function analyzeLocally(
             walk(child);
       }
       walk(ast);
-      const prettier = await import("prettier/standalone"),
-        estree = await import("prettier/plugins/estree"),
-        syntax =
-          file.language === "typescript" || file.language === "tsx"
-            ? await import("prettier/plugins/typescript")
-            : await import("prettier/plugins/babel");
+      const syntax = file.language === "typescript" || file.language === "tsx" ? typescript : babel;
       const formatted = await prettier.format(file.content, {
         parser:
           file.language === "typescript" || file.language === "tsx"

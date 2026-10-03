@@ -32,6 +32,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { analyzeLocally } from "@/lib/local-analysis";
 import { readArtifacts } from "@/lib/read-artifact";
 import { validateSources, MAX_CHARACTERS } from "@/lib/analysis-contract";
 import type {
@@ -157,7 +158,6 @@ export function HumanLayerApp() {
     try {
       let result: AnalysisReport;
       if (mode === "local") {
-        const { analyzeLocally } = await import("@/lib/local-analysis");
         result = await analyzeLocally(sources, kind);
       } else {
         const response = await fetch("/api/analyze", {
